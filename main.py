@@ -102,7 +102,7 @@ if __name__ == '__main__':
         "--target-model",
         default = "vicuna",
         help = "Name of target model.",
-        choices=["vicuna", "llama-2", "gpt-3.5-turbo", "gpt-4", "claude-instant-1","claude-2", "palm-2"]
+        choices=["vicuna", "llama-2", "gpt-3.5-turbo", "gpt-4", "claude-instant-1","claude-2", "palm-2","flan-t5-base", "t5-small"]
     )
     parser.add_argument(
         "--target-max-n-tokens",

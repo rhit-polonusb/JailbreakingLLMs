@@ -2,7 +2,7 @@
 import common
 from language_models import GPT, Claude, PaLM, HuggingFace
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, T5ForConditionalGeneration, T5Tokenizer,T5Model
 from config import VICUNA_PATH, LLAMA_PATH, ATTACK_TEMP, TARGET_TEMP, ATTACK_TOP_P, TARGET_TOP_P   
 
 def load_attack_and_target_models(args):
@@ -177,6 +177,18 @@ def load_indiv_model(model_name, device=None):
         lm = Claude(model_name)
     elif model_name in ["palm-2"]:
         lm = PaLM(model_name)
+    elif model_name in ["flan-t5-base","t5-small"]:
+        model = T5ForConditionalGeneration.from_pretrained(
+                model_path, 
+                torch_dtype=torch.float16,
+                low_cpu_mem_usage=True,device_map="auto").eval()
+
+        tokenizer = T5Tokenizer.from_pretrained(
+            model_path,
+            use_fast=False
+        ) 
+
+        lm = HuggingFace(model_name, model, tokenizer)
     else:
         model = AutoModelForCausalLM.from_pretrained(
                 model_path, 
@@ -230,6 +242,14 @@ def get_model_path_and_template(model_name):
         "palm-2":{
             "path":"palm-2",
             "template":"palm-2"
+        },
+        "flan-t5-base":{
+          "path":"google/flan-t5-base",
+          "template":"google/flan-t5-base"
+        },
+        "t5-small":{
+          "path":"google-t5/t5-small",
+          "template":"google-t5/t5-small"
         }
     }
     path, template = full_model_dict[model_name]["path"], full_model_dict[model_name]["template"]

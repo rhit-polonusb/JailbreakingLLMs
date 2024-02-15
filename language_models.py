@@ -1,9 +1,9 @@
 import openai
 from openai import OpenAI
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 import anthropic
 import os
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 import time
 import torch
 import gc
@@ -108,7 +108,7 @@ class GPT(LanguageModel):
                 max_tokens = max_n_tokens,
                 temperature = temperature,
                 top_p = top_p,
-                request_timeout = self.API_TIMEOUT)
+                timeout = self.API_TIMEOUT)
                 output = response.choices[0].message.content
                 break
             except openai.OpenAIError as e:
